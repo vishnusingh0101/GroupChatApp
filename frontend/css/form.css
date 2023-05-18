@@ -1,3 +1,9 @@
+.message {
+    background-color: rgb(255, 0, 0);
+    color: aliceblue;
+    padding: 0px 5px;
+    border-radius: 5px;
+}
 
 .heading {
     display: flex;
@@ -7,41 +13,45 @@
 }
 
 .heading h4 {
-    font-size: large;
-    font-family:'Courier New', Courier, monospace;
+    font-size: xx-large;
+    font-family: 'Courier New', Courier, monospace;
     color: rgb(108, 187, 255);
 }
 
 .container {
-    width: 180px;
+    width: 400px;
     height: auto;
     margin-left: auto;
     margin-right: auto;
     margin-top: 2%;
     border: 2px grey;
-    background-color: rgb(219, 238, 254);
+    background-color: rgba(122, 129, 123, 0.3);
     border-radius: 5px;
-    padding: 10px;
+    padding: 20px;
 }
 
 .container form label {
-    margin-bottom: 5px;
-    font-weight: 100;
+    margin-top: 5px;
+    font-weight: 450;
+    font-size: x-large;
     font-family: Arial, Helvetica, sans-serif;
     color: rgb(44, 44, 44);
 }
 
 .container form input {
+    height: 5vh;
+    width: 98%;
     margin-bottom: 5px;
     border: none;
-    border-radius: 2px;
-    height: auto;
+    border-radius: 5px;
     padding: 1px;
     outline-color: whitesmoke;
+    margin-bottom: 10px;
 
 }
 
 .container form button {
+    height: 5vh;
     color: rgb(255, 255, 255);
     background-color: rgb(113, 189, 255);
     border: none;
@@ -56,12 +66,11 @@
 .container form button:hover {
     background-color: rgb(70, 169, 255);
     cursor: pointer;
-    font-size: 90%;
+    font-size: 100%;
 }
 
-.container a{
+.container a {
     text-decoration: none;
-    font-size: x-small;
     color: rgb(14, 143, 255);
 }
 
@@ -69,4 +78,38 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+@media (max-width: 767px) {
+    .heading {
+        height: 10vh;
+    }
+
+    .heading h4 {
+        font-size: xx-large;
+    }
+
+    .container {
+        width: 80%;
+        margin: 2% auto;
+        padding: 10px;
+    }
+
+    .container form label {
+        margin-top: 5px;
+        font-size: x-large;
+    }
+
+    .container form input {
+        height: 3vh;
+        margin-bottom: 5px;
+        border-radius: 3px;
+        padding: 5px;
+    }
+
+    .container form button {
+        font-size: larger;
+        height: 4vh;
+        width: 100%;
+    }
 }
