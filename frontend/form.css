@@ -1,0 +1,72 @@
+
+.heading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vh;
+}
+
+.heading h4 {
+    font-size: large;
+    font-family:'Courier New', Courier, monospace;
+    color: rgb(108, 187, 255);
+}
+
+.container {
+    width: 180px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2%;
+    border: 2px grey;
+    background-color: rgb(219, 238, 254);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.container form label {
+    margin-bottom: 5px;
+    font-weight: 100;
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(44, 44, 44);
+}
+
+.container form input {
+    margin-bottom: 5px;
+    border: none;
+    border-radius: 2px;
+    height: auto;
+    padding: 1px;
+    outline-color: whitesmoke;
+
+}
+
+.container form button {
+    color: rgb(255, 255, 255);
+    background-color: rgb(113, 189, 255);
+    border: none;
+    border-radius: 3px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 50%;
+    padding: 2px;
+}
+
+.container form button:hover {
+    background-color: rgb(70, 169, 255);
+    cursor: pointer;
+    font-size: 90%;
+}
+
+.container a{
+    text-decoration: none;
+    font-size: x-small;
+    color: rgb(14, 143, 255);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
