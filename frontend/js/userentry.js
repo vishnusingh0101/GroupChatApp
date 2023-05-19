@@ -37,9 +37,8 @@ async function login(e) {
             mail: document.getElementById('mail').value,
             password: document.getElementById('password').value,
         };
-        console.log(obj);
         const user = await axios.post('http://localhost:3000/signin', obj);
-        if (user.data.message == "Log in Success") {
+        if (user.data.message == "Successfully Loged In") {
             localStorage.setItem('token', user.data.token);
             window.location.href = "../html/mainpage.html"
         } else {
