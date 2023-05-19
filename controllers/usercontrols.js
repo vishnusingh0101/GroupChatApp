@@ -9,11 +9,11 @@ const signup = async (req, res, next) => {
         const { name, mail, phone, password } = req.body;
         const existingmail = await User.findOne({where: {mail}});
         if(existingmail) {
-            return res.status(201).json({message: "Email already exist!"});
+            return res.status(409).json({success: false, message: "Email already exist!"});
         }
         const existingphone = await User.findOne({where: {phone}});
         if(existingphone) {
-            return res.status(201).json({message: "Phone Number already exist!"});
+            return res.status(409).json({success: false, message: "Phone Number already exist!"});
         }
         bcrypt.hash(password, 10, async (err, hash) => {
             await User.create({name, mail, phone, password:hash});
@@ -38,11 +38,11 @@ const signin = async (req, res, next) => {
                 
                 res.status(200).json({success: true, token: generateToken(user.id, user.name), message: "Successfully Loged In"});
             }else{
-                res.status(401).json({success: false, message: "Wrong Password. Try again!"})
+                res.status(401).json({success: false, message: "Incorrect Password"})
             }
         })
     }else{
-        res.status(404).json({success:false, message: "User not found!"})
+        res.status(404).json({success:false, message: "User not found"})
     }
     
 };
