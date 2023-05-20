@@ -17,9 +17,7 @@ async function createUser(e) {
     
             if (response.status === 201 && response.data.message === 'Created new user') {
                 localStorage.setItem('token', response.data.token);
-                h3.innerText = response.data.message;
-                output.appendChild(h3);
-                // window.location.href = '../html/mainpage.html';
+                window.location.href = '../html/signin.html';
             } else {
                 throw new Error(response.data.message);
             }
@@ -55,7 +53,7 @@ async function login(e) {
 
             if (response.status === 200 && response.data.message === 'Successfully Logged In') {
                 localStorage.setItem('token', response.data.token);
-                // window.location.href = '../html/mainpage.html';
+                window.location.href = '../html/groupchat.html';
             } else {
                 throw new Error(response.data.message);
             }

@@ -35,8 +35,7 @@ const signin = async (req, res, next) => {
                 res.status(201).json({message: "Try again "})
             }
             if(result == true) {
-                
-                res.status(200).json({success: true, token: generateToken(user.id, user.name), message: "Successfully Loged In"});
+                res.status(200).json({success: true, token: generateToken(user.id, user.name), message: "Successfully Logged In"});
             }else{
                 res.status(401).json({success: false, message: "Incorrect Password"})
             }
