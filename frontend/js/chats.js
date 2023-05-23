@@ -1,22 +1,27 @@
-window.onload = async () => {
-    const token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:3000/msg', {headers: {"Authorization": token}});
-    console.log(response.data);
-    if(response.data.status === true) {
-        for(let message of response.data.message){
-            setMessageInBox(message);
+
+setInterval(async () => {
+        console.log('working');
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:3000/msg', { headers: { "Authorization": token } });
+        console.log(response.data);
+        const messagebox = document.getElementById('messagebox');
+        messagebox.innerHTML = '';
+        if (response.data.status === true) {
+            for (let message of response.data.message) {
+                setMessageInBox(message);
+            }
         }
-    }
-}
+}, 1000);
+
 
 
 async function send(e) {
     e.preventDefault();
     const token = localStorage.getItem('token');
     const chatInput = document.getElementById('chat-input').value;
-    const obj = {chatInput};
-    const response = await axios.post('http://localhost:3000/send', obj, {headers: {"Authorization": token}})
-    if(response.data.status === true) {
+    const obj = { chatInput };
+    const response = await axios.post('http://localhost:3000/send', obj, { headers: { "Authorization": token } })
+    if (response.data.status === true) {
         setMessageInBox(response.data.message);
         document.getElementById('chat-input').value = '';
     }
@@ -24,7 +29,7 @@ async function send(e) {
 
 function setMessageInBox(obj) {
     const id = localStorage.getItem('userId');
-    
+
     const messagebox = document.getElementById('messagebox');
 
     const name = document.createElement('div');
@@ -35,17 +40,17 @@ function setMessageInBox(obj) {
     const messagecontent = document.createElement('div');
     messagecontent.classList = 'messagecontent';
 
-    if(obj.message.userId == id) {
+    if (obj.message.userId == id) {
         name.innerText = 'You:';
         message.classList = 'messageright'
-    }else {
+    } else {
         name.innerText = obj.name;
         message.classList = 'messageleft';
     }
-        messagecontent.innerText = obj.message;
+    messagecontent.innerText = obj.message;
 
-        message.appendChild(name);
-        message.appendChild(messagecontent);
+    message.appendChild(name);
+    message.appendChild(messagecontent);
 
-        messagebox.appendChild(message);
+    messagebox.appendChild(message);
 }
