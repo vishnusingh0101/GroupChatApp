@@ -34,15 +34,27 @@
 }
 
 .chat .messagebox {
-    height: 86%;
+    height: 85%;
+    margin-bottom: 1%;
+    overflow: auto;
+    -ms-overflow-style: unset;
 }
 
-.message {
-    width: 98%;
+.messageright {
+    width: 60%;
     height: auto;
-    margin: 0.5%;
     padding: 0.2%;
-    border-radius: 3px;
+    margin: 0.5% 0.5% 0.5% auto;
+    border-radius: 10px;
+    background-color: #d1d1d1;
+}
+
+.messageleft {
+    width: 60%;
+    height: auto;
+    padding: 0.2%;
+    margin: 0.5% 0.5% auto 0.5%;
+    border-radius: 10px;
     background-color: #d1d1d1;
 }
 

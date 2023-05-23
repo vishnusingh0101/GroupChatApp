@@ -28,14 +28,13 @@ const signup = async (req, res, next) => {
 const signin = async (req, res, next) => {
     const { mail, password } = req.body;
     const user = await User.findOne({where: {mail}});
-    console.log(user);
     if(user) {
         bcrypt.compare(password, user.password, (err, result) => {
             if(err) {
                 res.status(201).json({message: "Try again "})
             }
             if(result == true) {
-                res.status(200).json({success: true, token: generateToken(user.id, user.name), message: "Successfully Logged In"});
+                res.status(200).json({success: true,userId: user.id, userName: user.name, token: generateToken(user.id, user.mail, user.name), message: "Successfully Logged In"});
             }else{
                 res.status(401).json({success: false, message: "Incorrect Password"})
             }

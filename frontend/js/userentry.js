@@ -53,6 +53,8 @@ async function login(e) {
 
             if (response.status === 200 && response.data.message === 'Successfully Logged In') {
                 localStorage.setItem('token', response.data.token);
+                console.log(response.data);
+                localStorage.setItem('userId', response.data.userId);
                 window.location.href = '../html/groupchat.html';
             } else {
                 throw new Error(response.data.message);
