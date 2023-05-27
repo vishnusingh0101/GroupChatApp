@@ -1,8 +1,18 @@
 const Chats = require('../model/chats');
 const sequelize = require('../util/database');
+const Sequelize = require('sequelize');
 
 const fetchmessages = async (req, res, next) => {
-    const msg = await Chats.findAll();
+    const lastId = req.query.lastId;
+    let msg;
+    if(lastId == null) {
+        console.log('worked');
+        msg = await Chats.findAll();
+    }else {
+        msg = await Chats.findAll(
+            { where: { id: { [Sequelize.Op.gt]: req.query.lastId } } }
+        );
+    }
     res.status(200).json({message: msg, status: true});
 }
 

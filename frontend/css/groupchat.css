@@ -37,7 +37,6 @@
     height: 85%;
     margin-bottom: 1%;
     overflow: auto;
-    -ms-overflow-style: unset;
 }
 
 .messageright {
