@@ -1,0 +1,99 @@
+.nav{
+    display: flex;
+} 
+
+.cancel {
+    margin-left: auto;
+    margin-right: 5%;
+}
+.cancel button {
+    font-size: large;
+    border-radius: 5px;
+    border: none;
+    background-color: rgb(171, 171, 171);
+    width: 150%;
+    height: 200%;
+}
+
+.container{
+    margin-top: 7%;
+}
+
+.title h3{
+    margin-left: auto;
+    margin-right: auto;
+    width: 10%;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: 70000;
+}
+
+.container form{
+    width: 400px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2%;
+    border: 2px grey;
+    background-color: rgba(122, 129, 123, 0.3);
+    border-radius: 5px;
+    padding: 20px;    
+}
+
+.container form input{
+    height: 25px;
+    width: 98%;
+    margin-bottom: 5px;
+    border: none;
+    border-radius: 5px;
+    padding: 1px;
+    outline-color: whitesmoke;
+    margin-bottom: 10px;
+}
+
+.container form #searchmail{
+    width: 83%;
+}
+
+.container form #searchbutton{
+    background-color: rgb(0, 129, 0);
+    color: aliceblue;
+    padding: 2%;
+    border-radius: 10px;
+    border: none;
+}
+
+.container form #create{
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    background-color: rgb(74, 249, 255);
+    color: rgb(17, 14, 14);
+    padding: 2%;
+    border-radius: 10px;
+    border: none;
+}
+
+.container form .memberlist{
+    max-height: 80px;
+    overflow-y: scroll;
+}
+
+.container form .member{
+    background-color: aquamarine;
+    border-radius: 5px;
+    margin-bottom: 3px;
+    height: 25px;
+    display: flex;
+}
+
+.container form .member h5{
+    margin: 5px;
+}
+
+.container form .member #add{
+    margin-left: auto;
+    margin-right: 5px;
+    width: 80px;
+    border-radius: 5px;
+    border: none;
+}

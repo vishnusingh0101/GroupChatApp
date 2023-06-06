@@ -3,10 +3,13 @@ const sequelize = require('../util/database');
 
 const group = sequelize.define('group',{
     id: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        type: Sequelize.INTEGER,
         autoIncrement: true,
+        allowNull: false,
         primaryKey: true,
-    },
-    name: Sequelize.STRING,
+      },
+    groupname: Sequelize.STRING,
+    createBy: Sequelize.STRING,
 })
+
+module.exports = group;

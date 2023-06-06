@@ -2,6 +2,36 @@
     height: 600px;
 }
 
+.nav{
+    display: flex;
+    background-color: aqua;
+    border-radius: 10px;
+    height: auto;
+}
+
+.title {
+    margin-left: 5%;
+}
+
+.symbol {
+    margin-left: auto;
+    margin-right: 1%;
+    align-self: center;
+    display: flex;
+}
+
+.symbol button {
+    font-size: 100%;
+    color: #fff;
+    background-color: #075e54;
+    border: none;
+    border-radius: 20px;
+    width: 130px;
+    height: 35px;
+    margin: 2px;
+    padding: 2%;
+}
+
 .content {
     display: flex;
     height: 550px;
@@ -15,7 +45,7 @@
     border-radius: 10px;
 }
 
-.contact {
+.Group {
     display: flex;
     justify-content: center;
     width: auto;
@@ -26,15 +56,41 @@
     background-color:rgb(195, 250, 255);
 }
 
+.Group:hover {
+    background-color:#ccc;
+    cursor: pointer;
+}
+
+.Group.active {
+    background-color:#ccc;
+}
+
 .chat {
+    margin-top: 4px;
+    margin-bottom: 4px;
     width: 100%;
     background-color: rgb(99, 212, 220, 0.5);
-    margin: 4px;
     border-radius: 10px;
 }
 
+.chat .head{
+    padding-top: 0%;
+    /* background-color: #a4a2a2; */
+    display: flex;
+    align-items: center;
+    border-radius: 10px 10px 0px 0px;
+}
+.head .grpname{
+    width: fit-content;
+}
+
+.grpname h3{
+    margin: none;
+}
+
 .chat .messagebox {
-    height: 85%;
+    background-color: #a2dfdd80;
+    height: 405px;
     margin-bottom: 1%;
     overflow: auto;
 }
@@ -63,7 +119,6 @@
 
 .chat-footer {
     padding: 10px;
-    background-color: #f1f0f0;
     display: flex;
     margin: 0px 4px;
     align-items: center;

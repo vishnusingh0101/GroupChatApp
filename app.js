@@ -4,11 +4,14 @@ const cors = require('cors');
 
 const userRoute = require('./routes/user');
 const chatsRoute = require('./routes/chats');
+const creategroupRoute = require('./routes/creategroup');
 
 const sequelize = require('./util/database');
 
 const user = require('./model/user')
 const chats = require('./model/chats')
+const group = require('./model/group')
+const usergroup = require('./model/userGroup')
 
 const app = express();
 
@@ -23,9 +26,16 @@ app.use(bodyParser.json({extended: false}));
 
 app.use(userRoute);
 app.use(chatsRoute);
+app.use(creategroupRoute);
 
 user.hasMany(chats);
 chats.belongsTo(user);
+
+group.hasMany(chats);
+chats.belongsTo(group);
+
+user.belongsToMany(group, {through: usergroup});
+group.belongsToMany(user, {through: usergroup, foreignKey: 'groupId' });
 
 sequelize.sync()
 .then(result =>{

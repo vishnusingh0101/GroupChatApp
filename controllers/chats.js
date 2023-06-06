@@ -3,17 +3,31 @@ const sequelize = require('../util/database');
 const Sequelize = require('sequelize');
 
 const fetchmessages = async (req, res, next) => {
+    const groupId = req.query.groupId;
     const lastId = req.query.lastId;
     let msg;
-    if(lastId == null) {
-        console.log('worked');
-        msg = await Chats.findAll();
-    }else {
-        msg = await Chats.findAll(
-            { where: { id: { [Sequelize.Op.gt]: req.query.lastId } } }
-        );
+    try{
+        if(lastId === null || lastId === 'null') {
+            msg = await Chats.findAll({
+                where:{ groupId: groupId},
+                order:[['id', 'DESC']],
+                limit: 10
+            });
+            console.log(msg);
+        }else {
+            msg = await Chats.findAll(
+                { where: { id: { [Sequelize.Op.gt]: lastId, groupId } } }
+            );
+        }
+    }catch(err){
+        console.log(err);
     }
-    res.status(200).json({message: msg, status: true});
+    console.log(msg);
+    if (msg.length > 0) {
+        res.status(200).json({ message: msg, status: true });
+    } else {
+        res.status(200).json({ message: [], status: false });
+    }
 }
 
 const send = async (req, res, next) => {
@@ -23,6 +37,7 @@ const send = async (req, res, next) => {
             name: req.user.name,
             message: req.body.chatInput,
             userId: req.user.id,
+            groupId: req.body.groupId,
         }, { transaction: t });
         console.log(chat);
         res.status(200).json({ message: chat, status: true });
@@ -33,7 +48,9 @@ const send = async (req, res, next) => {
     }
 }
 
+
+
 module.exports = {
     send,
-    fetchmessages
+    fetchmessages,
 }
