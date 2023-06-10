@@ -17,7 +17,7 @@ const app = express();
 
 app.use(cors({
     // origin: 'http://127.0.0.1:5500',
-    // origin:'http://localhost:3000',
+    // origin:'http://107.23.1.26:3000',
     // credentials:true,            //access-control-allow-credentials:true
     // optionSuccessStatus:200
 }));

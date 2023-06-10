@@ -12,7 +12,7 @@ async function searchmember(e) {
     const token = localStorage.getItem('token');
     console.log(token);
     const obj = { mail: document.getElementById('searchmail').value };
-    const member = await axios.post('http://localhost:3000/search', obj, { headers: { "Authorization": token } });
+    const member = await axios.post('http://107.23.1.26:3000/search', obj, { headers: { "Authorization": token } });
     
     showOnScreen(member.data.user);
 }
@@ -74,7 +74,7 @@ async function createGroup(e) {
         groupName: document.getElementById('groupname').value,
     }
     console.log(obj);
-    const group = await axios.post('http://localhost:3000/creategroup', obj, { headers: { 'Authorization': token } });
+    const group = await axios.post('http://107.23.1.26:3000/creategroup', obj, { headers: { 'Authorization': token } });
     console.log(group);
 
     const list = document.getElementById('memberlist');
