@@ -1,9 +1,11 @@
 let lastId = localStorage.getItem('lastId');
-// localStorage.setItem('groupId', 1);
 let groupId = localStorage.getItem('groupId');
 const localmessages = localStorage.getItem('localmessages');
+const popup = document.getElementById('popup');
 
 window.onload = async () => {
+    const usermail = document.getElementById('usermail');
+    usermail.innerText = localStorage.getItem('profilemail');
     try {
         const sidebar = document.getElementById('sidebar');
         sidebar.innerHTML = '';
@@ -17,18 +19,17 @@ window.onload = async () => {
             div.onclick = () => getGroup(grp, div);
             sidebar.appendChild(div);
         }
-        // const firstgroup = sidebar.querySelector('.Group');
-        // if(firstgroup) {
-        //     firstgroup.classList.add('active');
-        // }
     } catch (err) {
         console.log(err);
     }
 };
 
 function getGroup(grp, div) {
+    const chatbox = document.getElementById('chatbox');
+    chatbox.style.display = 'block';
+
     const groupElements = sidebar.getElementsByClassName('Group');
-    for(groupEl of groupElements) {
+    for (groupEl of groupElements) {
         groupEl.classList.remove('active');
     }
     div.classList.add('active');
@@ -39,29 +40,113 @@ function getGroup(grp, div) {
     localStorage.setItem('localmessages', '');
 
     //head grpname
-    const head = document.getElementById('header');
-    head.style.backgroundColor = 'rgba(230, 243, 255, 0.525)';
-
     const grpname = document.getElementById('grpname');
     grpname.innerHTML = '';
-    const h1 = document.createElement('h3');
-    h1.innerText = grp.groupname;
-    grpname.appendChild(h1);
+    const h3 = document.createElement('h3');
+    h3.innerText = grp.groupname;
+    grpname.appendChild(h3);
 
-    //footer
-    const chatfooter = document.getElementById('chat-footer');
-    chatfooter.innerHTML = '';
-    chatfooter.style.backgroundColor = 'f1f0f0';
-    const textarea = document.createElement('textarea');
-    textarea.placeholder = 'Type a message...';
-    textarea.id = 'chat-input';
-    const sendbutton = document.createElement('button');
-    sendbutton.innerText = 'Send';
-    sendbutton.onclick = send;
-
-    chatfooter.appendChild(textarea);
-    chatfooter.appendChild(sendbutton);
 }
+
+let optiondiv = document.getElementById('optiondiv');
+let options = document.getElementById('options');
+let groupmemberlist = document.getElementById('groupmemberlist');
+let groupmemberlistoptions = document.getElementById('groupmemberlistoptions');
+
+options.addEventListener('mousedown', function (event) {
+    optiondiv.style.display = 'block';
+    const val = groupmemberlistoptions.style.display.toString;
+    if(val === "block"){
+        groupmemberlist.style.display = 'none';
+    }
+
+    event.stopPropagation();
+});
+
+document.addEventListener('mousedown', function (event) {
+    console.log(event.target);
+    if (!optiondiv.contains(event.target) && !groupmemberlist.contains(event.target)) {
+        optiondiv.style.display = 'none';
+        groupmemberlist.style.display = 'none';
+        groupmemberlistoptions.style.display = 'none';
+    }
+});
+
+async function showmemberslist() {
+    groupmemberlist.innerHTML = '';
+    const groupId = localStorage.getItem('groupId');
+    console.log('got hit', groupId);
+    const members = await axios.get(`http://localhost:3000/members?groupId=${groupId}`);
+    groupmemberlist.style.display = 'block';
+    for (let member of members.data.data) {
+        console.log(localStorage.getItem('profileMail'))
+        const memb = document.createElement('div');
+        memb.classList = 'optionsbutton';
+        memb.innerText = member.name;
+        console.log(localStorage.getItem('profilemail'), 'profileMail-----------------');
+        if(member.mail == localStorage.getItem('profilemail')){
+            memb.innerText = member.name+' (You)';
+            groupmemberlist.appendChild(memb);
+            continue;
+        }
+        memb.addEventListener('mousedown', function (event) {
+            event.preventDefault(); // Prevent default right-click menu
+
+            groupmemberlistoptions.innerHTML = '';
+            groupmemberlistoptions.style.display = 'block';
+
+            // Create "Remove" option
+            const removeOption = document.createElement('div');
+            removeOption.innerText = 'Remove';
+            removeOption.classList = 'optionsbutton';
+            removeOption.addEventListener('click', function () {
+                removeMember(member.id, groupId); // Call the function to remove the member
+                groupmemberlistoptions.style.display = 'none'; // Hide the options after clicking
+            });
+            groupmemberlistoptions.appendChild(removeOption);
+            console.log(groupmemberlistoptions);
+
+            // Create "Make Admin" option
+            const makeAdminOption = document.createElement('div');
+            makeAdminOption.innerText = 'Make Admin';
+            makeAdminOption.classList = 'optionsbutton';
+            makeAdminOption.addEventListener('click', function () {
+                makeAdmin(member.id); // Call the function to make the member an admin
+                groupmemberlistoptions.style.display = 'none'; // Hide the options after clicking
+            });
+            groupmemberlistoptions.appendChild(makeAdminOption);
+        });
+
+        groupmemberlist.appendChild(memb);
+    }
+    console.log(members);
+}
+
+function removeMember(memberId) {
+    console.log('removeMember');
+    const token = localStorage.getItem('token');
+    const deleted = axios.get(`http://localhost:3000/remove?groupId=${groupId}&memberId=${memberId}`, { headers: { "Authorization": token } });
+    console.log(deleted);
+    groupmemberlistoptions.style.display = 'none';
+    groupmemberlist.style.display = 'none';
+    groupmemberlistoptions.innerHTML = '';
+    // Implement the logic to remove the member with the provided memberId
+}
+
+function makeAdmin(memberId) {
+    console.log('makeAdmin');
+    const token = localStorage.getItem('token');
+    const isadmin = axios.get(`http://localhost:3000/makeadmin?groupId=${groupId}&memberId=${memberId}`, { headers: { "Authorization": token } });
+    console.log(isadmin);
+    groupmemberlistoptions.style.display = 'none';
+    groupmemberlist.style.display = 'none';
+    groupmemberlistoptions.innerHTML = '';
+    // Implement the logic to make the member with the provided memberId an admin
+}
+
+
+
+
 
 setInterval(async () => {
     let groupId = localStorage.getItem('groupId');

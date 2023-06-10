@@ -4,7 +4,7 @@ const cors = require('cors');
 
 const userRoute = require('./routes/user');
 const chatsRoute = require('./routes/chats');
-const creategroupRoute = require('./routes/creategroup');
+const groupRoute = require('./routes/group');
 
 const sequelize = require('./util/database');
 
@@ -26,7 +26,7 @@ app.use(bodyParser.json({extended: false}));
 
 app.use(userRoute);
 app.use(chatsRoute);
-app.use(creategroupRoute);
+app.use(groupRoute);
 
 user.hasMany(chats);
 chats.belongsTo(user);

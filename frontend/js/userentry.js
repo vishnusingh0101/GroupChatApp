@@ -45,16 +45,17 @@ async function login(e) {
             h3.innerText = "Please fill all the details";
             output.appendChild(h3);
         } else {
+            const mail = document.getElementById('mail').value;
             const obj = {
-                mail: document.getElementById('mail').value,
+                mail,
                 password: document.getElementById('password').value,
             };
             const response = await axios.post('http://localhost:3000/signin', obj);
 
             if (response.status === 200 && response.data.message === 'Successfully Logged In') {
-                localStorage.setItem('token', response.data.token);
-                console.log('token----------------------', response.data.token);
                 console.log(response.data);
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('profilemail', mail);
                 localStorage.setItem('userId', response.data.userId);
                 window.location.href = '../html/groupchat.html';
             } else {

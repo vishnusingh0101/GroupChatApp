@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Group Chat</title>
     <link rel="stylesheet" href="../css/groupchat.css">
+    <link rel="stylesheet" href="../css/creategroup.css">
 </head>
 
 <body>
@@ -14,42 +15,89 @@
         <div class="nav">
             <div class="title">
                 <h2>Chat App</h2>
+                <h3 id="usermail" class="profile"></h3>
             </div>
             <div class="symbol">
-                <button id="creategroup" onclick=" window.location.href = '../html/creategroup.html' ">Create Group</button>
+                <!-- <button id="creategroup" onclick=" window.location.href = '../html/creategroup.html' ">Create Group</button> -->
+                <button id="creategroup" onclick="createGroupForm()">Create Group</button>
                 <button id="Log Out" onclick="logout()">Log Out</button>
             </div>
         </div>
-        
+
         <div class="content">
             <div class="sidebar" id="sidebar">
-                <!--    <div class="Group">Vishnu</div>               //sample       -->  
+                <!-- <div class="Group">Vishnu</div>                -->
             </div>
-            <div class="chat">
-                <div class="head" id="header">
-                    <div class="grpname" id="grpname">
-                        <!-- <h3>Vishnu</h3> -->
+            <div class="chat" id="chat">
+                <div class="chatbox" id="chatbox">
+                    <div class="head" id="header">
+                        <div class="grpname" id="grpname">
+                            <!-- <h3>Vishnu</h3> -->
+                        </div>
+                        <div class="options" id="options">
+                            <h2>...</h2>
+                            <div class="optiondiv" id="optiondiv">
+                                <button id="groupmembers" onclick="showmemberslist()">Members</button>
+                            </div>
+                            <div class="groupmemberlist" id="groupmemberlist">
+                            </div>
+                            <div class="groupmemberlistoptions" id="groupmemberlistoptions">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="messagebox" id="messagebox">
+                        <!-- <div class="messageleft" id="msg">
+                            <div class="name">Vishnu:</div>
+                            <div class="messagecontent">Hii! how are you!</div>
+                        </div>
+                        <div class="messageleft" id="msg">
+                            <div class="name">Vishnu:</div>
+                            <div class="messagecontent">Hii! how are you!</div>
+                        </div> -->
+                    </div>
+                    <div class="chat-footer" id="chat-footer">
+                        <textarea placeholder="Type a message..." id="chat-input"></textarea>
+                        <button onclick="send(event)">Send</button>
                     </div>
                 </div>
-                <div class="messagebox" id="messagebox">
-                    <!-- <div class="messageleft" id="msg">
-                        <div class="name">Vishnu:</div>
-                        <div class="messagecontent">Hii! how are you!</div>
-                    </div>
-                    <div class="messageleft" id="msg">
-                        <div class="name">Vishnu:</div>
-                        <div class="messagecontent">Hii! how are you!</div>
-                    </div> -->
-                </div>
-                <div class="chat-footer" id="chat-footer">
-                    <!-- <textarea placeholder="Type a message..." id="chat-input"></textarea>
-                    <button onclick="send(event)">Send</button> -->
+            </div>
+            <div class="createGroupDiv" id="createGroupDiv">
+                <div class="container">
+                    <form>
+                        <div class="formheader">
+                            <div class="title">
+                                <h3>Create Group</h3>
+                            </div>
+                            <div class="cancel">
+                                <button onclick="moveback()">Cancel</button>
+                            </div>
+                        </div>
+                        <label for="groupname">Group Name</label>
+                        <br>
+                        <input type="text" id="groupname">
+                        <br>
+                        <label for="membername">Member Mail Id</label>
+                        <br>
+                        <input type="text" id="searchmail">
+                        <button id="searchbutton" onclick="searchmember(event)">Search</button>
+                        <br>
+                        <div class="memberlist" id="memberlist">
+                            <!-- <div class="member">
+                                    <h5>Vishnu Singh</h5>
+                                    <button id="add">Add</button>
+                                </div> -->
+                        </div>
+                        <br>
+                        <button id="create" onclick="createGroup(event)">Create</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+    </div>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="../js/chats.js"></script>
+    <script src="../js/creategroup.js"></script>
 </body>
 
 </html>

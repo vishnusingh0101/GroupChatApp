@@ -1,5 +1,11 @@
 let userMails = new Set();
 
+function createGroupForm() {
+    const createGroupDiv = document.getElementById('createGroupDiv')
+    createGroupDiv.style.display = 'flex';
+}
+
+
 async function searchmember(e) {
     e.preventDefault();
     console.log('worked');
@@ -7,6 +13,7 @@ async function searchmember(e) {
     console.log(token);
     const obj = { mail: document.getElementById('searchmail').value };
     const member = await axios.post('http://localhost:3000/search', obj, { headers: { "Authorization": token } });
+    
     showOnScreen(member.data.user);
 }
 
@@ -58,7 +65,7 @@ function removeuser(event, user) {
 }
 
 
-async function createGroup(e){
+async function createGroup(e) {
     e.preventDefault();
     const token = localStorage.getItem('token');
     const userMailsArray = Array.from(userMails);
@@ -67,10 +74,17 @@ async function createGroup(e){
         groupName: document.getElementById('groupname').value,
     }
     console.log(obj);
-    const group = await axios.post('http://localhost:3000/creategroup', obj, { headers: {'Authorization': token}});
-    console.log(group); 
+    const group = await axios.post('http://localhost:3000/creategroup', obj, { headers: { 'Authorization': token } });
+    console.log(group);
 
     const list = document.getElementById('memberlist');
     list.innerHTML = '';
-    window.location.href = '../html/groupchat.html';
+    moveback();
+
+
+}
+
+function moveback() {
+    const createGroupDiv = document.getElementById('createGroupDiv')
+    createGroupDiv.style.display = 'none';
 }

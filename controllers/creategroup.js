@@ -1,5 +1,6 @@
 const User = require('../model/user');
 const Group = require('../model/group');
+const Usergroup = require('../model/userGroup')
 
 const search = async (req, res) => {
     try{
@@ -21,9 +22,6 @@ const search = async (req, res) => {
 }
 
 const creategroup = async (req, res, next) => {
-    console.log(req.user.mail);
-    console.log(req.body.groupName);
-
     try {
         const group = await Group.create({ createBy: req.user.mail, groupname: req.body.groupName });
         console.log(group);
@@ -57,9 +55,64 @@ const getgroup = async (req, res, next) => {
     res.status(200).json({ data: groups, status: true});
 }
 
+const members = async (req, res, next) => {
+    const groupId = req.query.groupId;
+    const group = await Group.findByPk(groupId);
+    
+    if (group) {
+        const members = await group.getUsers();
+        console.log(members);
+        res.status(200).json({ data: members });
+    } else {
+        console.log('Group not found');
+        res.status(404).json({ error: 'Group not found' });
+    }
+};
+
+const remove = async (req, res, next) => {
+    let isadmin = false;
+    isadmin = await Usergroup.findOne({where: {
+        groupId: req.query.groupId,
+        userId: req.user.id,
+        isadmin: true
+    }});
+    console.log(isadmin);
+    if(isadmin){
+        const val = await Usergroup.destroy({where: {
+            groupId: req.query.groupId,
+            userId: req.query.memberId,
+        }});
+        console.log(val);
+        res.status(200).json({success: true, val, mail: req.user.mail});
+    }else{
+        res.status(201).json({success: false, val:'you dont have permision'});
+    }
+    
+}
+
+const makeadmin = async (req, res, next) => {
+    let isadmin = false;
+    isadmin = await Usergroup.findOne({where: {
+        groupId: req.query.groupId,
+        userId: req.user.id,
+        isadmin: true
+    }});
+    if(isadmin) {
+        const val = await Usergroup.update({isadmin:true},{where: {
+            groupId: req.query.groupId,
+            userId: req.query.memberId
+        }});
+        res.status(200).json({success: true, message:val, mail: req.user.mail});
+    }else{
+        res.status(201).json({success:false, message: 'You Do not have permision'})
+    }
+}
 
 module.exports ={
     search,
     creategroup,
     getgroup,
+    members,
+    remove,
+    makeadmin
 }

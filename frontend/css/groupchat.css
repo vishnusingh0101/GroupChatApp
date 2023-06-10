@@ -1,8 +1,19 @@
+.profile{
+    background-color: #ccc;
+    width: fit-content;
+    padding: 6px;
+    border-radius: 7px;
+    color: blueviolet;
+    height: 23px;
+    align-self: center;
+    display: inline-table;
+}
+
 .chat-body {
     height: 600px;
 }
 
-.nav{
+.nav {
     display: flex;
     background-color: aqua;
     border-radius: 10px;
@@ -11,7 +22,9 @@
 
 .title {
     margin-left: 5%;
+    display: flex;
 }
+
 
 .symbol {
     margin-left: auto;
@@ -53,17 +66,26 @@
     padding: 2%;
     margin: 2px 1px;
     border-radius: 3px;
-    background-color:rgb(195, 250, 255);
+    background-color: rgb(195, 250, 255);
 }
 
 .Group:hover {
-    background-color:#ccc;
+    background-color: #ccc;
     cursor: pointer;
 }
 
 .Group.active {
-    background-color:#ccc;
+    background-color: #ccc;
 }
+
+.options {
+    width: fit-content;
+    margin-left: 10px;
+    margin-right: 1%;
+    font-weight: bolder;
+    height: 5%;
+}
+
 
 .chat {
     margin-top: 4px;
@@ -73,19 +95,111 @@
     border-radius: 10px;
 }
 
-.chat .head{
+.head {
     padding-top: 0%;
-    /* background-color: #a4a2a2; */
+    background-color: rgba(230, 243, 255, 0.525);
     display: flex;
-    align-items: center;
     border-radius: 10px 10px 0px 0px;
+    align-items: center;
 }
-.head .grpname{
+
+.grpname {
     width: fit-content;
 }
 
-.grpname h3{
+.grpname h3 {
     margin: none;
+}
+
+.options {
+    width: 30px;
+    border-radius: 5px;
+    margin-left: auto;
+}
+
+.options:hover {
+    cursor: pointer;
+}
+
+.options h2 {
+    width: 28px;
+    display: flex;
+    justify-content: center;
+    border-radius: 20px;
+    position: relative;
+    overflow: visible;
+}
+
+.optiondiv {
+    display: none;
+    position: absolute;
+    top: 12%;
+    transform: translateX(-66%);
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    padding: 7px;
+    white-space: nowrap;
+}
+
+.optiondiv button {
+    width: 100px;
+    background-color: #d1d1d1;
+    border-radius: 5px;
+    padding: 5px;
+    border: none;
+}
+
+.groupmemberlist{
+    display: none;
+    position: absolute;
+    top: 16%;
+    transform: translateX(-175%);
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    padding: 7px;
+    white-space: nowrap;
+}
+
+.groupmemberlistoptions {
+    display: none;
+    position: absolute;
+    top: 25%;
+    transform: translateX(-281%);
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    padding: 7px;
+    white-space: nowrap;
+}
+
+.optionsbutton{
+    padding: 2px;
+    width: auto;
+    background-color: lightgrey;
+    margin-top: 1px;
+    border-radius: 4px;
+}
+
+/* .popup {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    transform: translateX(-55%);
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    padding: 10px;
+    white-space: nowrap;
+} */
+
+.show-popup {
+    display: block;
 }
 
 .chat .messagebox {
