@@ -10,7 +10,7 @@ window.onload = async () => {
         const sidebar = document.getElementById('sidebar');
         sidebar.innerHTML = '';
         const token = localStorage.getItem('token');
-        const group = await axios.get('http://107.23.1.26:3000/getGroup', { headers: { "Authorization": token } });
+        const group = await axios.get('http://13.233.193.168:3000/getGroup', { headers: { "Authorization": token } });
         console.log(group.data.data);
         for (const grp of group.data.data) {
             const div = document.createElement('div');
@@ -76,7 +76,7 @@ async function showmemberslist() {
     groupmemberlist.innerHTML = '';
     const groupId = localStorage.getItem('groupId');
     console.log('got hit', groupId);
-    const members = await axios.get(`http://107.23.1.26:3000/members?groupId=${groupId}`);
+    const members = await axios.get(`http://13.233.193.168:3000/members?groupId=${groupId}`);
     groupmemberlist.style.display = 'block';
     for (let member of members.data.data) {
         console.log(localStorage.getItem('profileMail'))
@@ -125,7 +125,7 @@ async function showmemberslist() {
 function removeMember(memberId) {
     console.log('removeMember');
     const token = localStorage.getItem('token');
-    const deleted = axios.get(`http://107.23.1.26:3000/remove?groupId=${groupId}&memberId=${memberId}`, { headers: { "Authorization": token } });
+    const deleted = axios.get(`http://13.233.193.168:3000/remove?groupId=${groupId}&memberId=${memberId}`, { headers: { "Authorization": token } });
     console.log(deleted);
     groupmemberlistoptions.style.display = 'none';
     groupmemberlist.style.display = 'none';
@@ -136,7 +136,7 @@ function removeMember(memberId) {
 function makeAdmin(memberId) {
     console.log('makeAdmin');
     const token = localStorage.getItem('token');
-    const isadmin = axios.get(`http://107.23.1.26:3000/makeadmin?groupId=${groupId}&memberId=${memberId}`, { headers: { "Authorization": token } });
+    const isadmin = axios.get(`http://13.233.193.168:3000/makeadmin?groupId=${groupId}&memberId=${memberId}`, { headers: { "Authorization": token } });
     console.log(isadmin);
     groupmemberlistoptions.style.display = 'none';
     groupmemberlist.style.display = 'none';
@@ -153,7 +153,7 @@ setInterval(async () => {
     let lastId = localStorage.getItem('lastId');
     if (groupId) {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`http://107.23.1.26:3000/msg?groupId=${groupId}&lastId=${lastId}`, { headers: { "Authorization": token } });
+        const response = await axios.get(`http://13.233.193.168:3000/msg?groupId=${groupId}&lastId=${lastId}`, { headers: { "Authorization": token } });
         const messagebox = document.getElementById('messagebox');
         if (localmessages === null) {
             response.data.message = response.data.message.slice(-10);
@@ -185,7 +185,7 @@ async function send(e) {
         chatInput,
         groupId: localStorage.getItem('groupId')
     };
-    const response = await axios.post('http://107.23.1.26:3000/send', obj, { headers: { "Authorization": token } });
+    const response = await axios.post('http://13.233.193.168:3000/send', obj, { headers: { "Authorization": token } });
     if (response.data.status === true) {
         setMessageInBox(response.data.message);
         lastId = lastId + 1;
