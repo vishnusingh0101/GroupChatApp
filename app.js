@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 
 const userRoute = require('./routes/user');
 const chatsRoute = require('./routes/chats');
@@ -27,6 +28,9 @@ app.use(bodyParser.json({extended: false}));
 app.use(userRoute);
 app.use(chatsRoute);
 app.use(groupRoute);
+app.use((req, res)=>{
+    res.sendFile(path.join(__dirname, `frontend/${req.url}`))
+})
 
 user.hasMany(chats);
 chats.belongsTo(user);
