@@ -13,7 +13,7 @@ async function createUser(e) {
                 phone: document.getElementById('phone').value,
                 password: document.getElementById('password').value,
             };
-            const response = await axios.post('http://13.233.193.168:3000/signup', obj);
+            const response = await axios.post('http://localhost:3000/signup', obj);
     
             if (response.status === 201 && response.data.message === 'Created new user') {
                 localStorage.setItem('token', response.data.token);
@@ -50,7 +50,7 @@ async function login(e) {
                 mail,
                 password: document.getElementById('password').value,
             };
-            const response = await axios.post('http://13.233.193.168:3000/signin', obj);
+            const response = await axios.post('http://localhost:3000/signin', obj);
 
             if (response.status === 200 && response.data.message === 'Successfully Logged In') {
                 console.log(response.data);

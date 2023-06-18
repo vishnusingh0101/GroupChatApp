@@ -1,4 +1,16 @@
+// copied all this to chats.js
+
+
+
+
+
+
+
+
+
+
 let userMails = new Set();
+const socket = io('http://localhost:3000');
 
 function createGroupForm() {
     const createGroupDiv = document.getElementById('createGroupDiv')
@@ -12,7 +24,7 @@ async function searchmember(e) {
     const token = localStorage.getItem('token');
     console.log(token);
     const obj = { mail: document.getElementById('searchmail').value };
-    const member = await axios.post('http://13.233.193.168:3000/search', obj, { headers: { "Authorization": token } });
+    const member = await axios.post('http://localhost:3000/search', obj, { headers: { "Authorization": token } });
     
     showOnScreen(member.data.user);
 }
@@ -74,9 +86,8 @@ async function createGroup(e) {
         groupName: document.getElementById('groupname').value,
     }
     console.log(obj);
-    const group = await axios.post('http://13.233.193.168:3000/creategroup', obj, { headers: { 'Authorization': token } });
-    console.log(group);
-
+    const group = await axios.post('http://localhost:3000/creategroup', obj, { headers: { 'Authorization': token } });
+    socket.emit('showNewGroup',group.data);
     const list = document.getElementById('memberlist');
     list.innerHTML = '';
     moveback();

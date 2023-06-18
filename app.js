@@ -3,6 +3,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 
+const http = require('http');
+const {Server} = require('socket.io');
+
 const userRoute = require('./routes/user');
 const chatsRoute = require('./routes/chats');
 const groupRoute = require('./routes/group');
@@ -14,23 +17,64 @@ const chats = require('./model/chats')
 const group = require('./model/group')
 const usergroup = require('./model/userGroup')
 
+
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
+
+io.on('connection',socket=>{
+    console.log('connected to server');
+    socket.on('ingroup', (group)=>{
+        socket.join(group);
+        console.log('joined group ', group);
+    });
+    socket.on('sendmessage',(data, group)=>{
+            io.to(group).emit('groupmsg', data);
+    });
+
+    socket.on('removeuser',data=>{
+        io.emit('removeusersuccess',data);
+    });
+
+    socket.on('join-user',data=>{
+        io.emit('joinsuccess',data)
+    });
+
+    socket.on('newAdmin',data=>{
+        io.emit('newAminsuccess',data);
+    });
+
+    socket.on('showNewGroup',data=>{
+        io.emit('displaysuccess',data)
+
+    });
+
+    socket.on('deletegroup',data=>{
+        io.emit('deletesuccess', data);
+    });
+});
+
+
+
 
 app.use(cors({
     // origin: 'http://127.0.0.1:5500',
-    // origin:'http://13.233.193.168:3000',
+    // origin:'http://localhost:3000',
     // credentials:true,            //access-control-allow-credentials:true
     // optionSuccessStatus:200
 }));
-
-app.use(bodyParser.json({extended: false}));
+app.use(bodyParser.json({ extended: false }));
 
 app.use(userRoute);
 app.use(chatsRoute);
 app.use(groupRoute);
-app.use((req, res)=>{
+app.use((req, res) => {
+    console.log(res.url);
     res.sendFile(path.join(__dirname, `frontend/${req.url}`))
-})
+});
+
+
+
 
 user.hasMany(chats);
 chats.belongsTo(user);
@@ -38,11 +82,14 @@ chats.belongsTo(user);
 group.hasMany(chats);
 chats.belongsTo(group);
 
-user.belongsToMany(group, {through: usergroup});
-group.belongsToMany(user, {through: usergroup, foreignKey: 'groupId' });
+user.belongsToMany(group, { through: usergroup });
+group.belongsToMany(user, { through: usergroup, foreignKey: 'groupId' });
+
+
+
 
 sequelize.sync()
-.then(result =>{
-    app.listen(3000);
-})
-.catch(err => console.log(err));
+    .then(result => {
+        server.listen(3000);
+    })
+    .catch(err => console.log(err));

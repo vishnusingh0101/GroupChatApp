@@ -5,6 +5,8 @@ const Sequelize = require('sequelize');
 const fetchmessages = async (req, res, next) => {
     const groupId = req.query.groupId;
     const lastId = req.query.lastId;
+    console.log(groupId, '----------------------------------------');
+    console.log(lastId, '-------------------------');
     let msg;
     try{
         if(lastId === null || lastId === 'null') {
@@ -13,16 +15,19 @@ const fetchmessages = async (req, res, next) => {
                 order:[['id', 'DESC']],
                 limit: 10
             });
-            console.log(msg);
         }else {
-            msg = await Chats.findAll(
-                { where: { id: { [Sequelize.Op.gt]: lastId, groupId } } }
-            );
+            msg = await Chats.findAll({
+                where: {
+                  groupId: groupId,
+                  id: {
+                    [Sequelize.Op.gt]: lastId
+                  }
+                }
+              });
         }
     }catch(err){
         console.log(err);
     }
-    console.log(msg);
     if (msg.length > 0) {
         res.status(200).json({ message: msg, status: true });
     } else {
@@ -39,7 +44,6 @@ const send = async (req, res, next) => {
             userId: req.user.id,
             groupId: req.body.groupId,
         }, { transaction: t });
-        console.log(chat);
         res.status(200).json({ message: chat, status: true });
         await t.commit();
     }catch (err) {

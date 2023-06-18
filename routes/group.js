@@ -11,5 +11,6 @@ router.get('/getGroup', authenticate, creategroup.getgroup);
 router.get('/members', creategroup.members);
 router.get('/remove',authenticate, creategroup.remove);
 router.get('/makeadmin',authenticate, creategroup.makeadmin);
+router.post('/deletegroup',authenticate, creategroup.deletegroup);
 
 module.exports = router;
