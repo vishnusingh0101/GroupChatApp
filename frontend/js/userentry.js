@@ -53,7 +53,6 @@ async function login(e) {
             const response = await axios.post('http://localhost:3000/signin', obj);
 
             if (response.status === 200 && response.data.message === 'Successfully Logged In') {
-                console.log(response.data);
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('profilemail', mail);
                 localStorage.setItem('userId', response.data.userId);

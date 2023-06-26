@@ -26,7 +26,6 @@ io.on('connection',socket=>{
     console.log('connected to server');
     socket.on('ingroup', (group)=>{
         socket.join(group);
-        console.log('joined group ', group);
     });
     socket.on('sendmessage',(data, group)=>{
             io.to(group).emit('groupmsg', data);
@@ -69,7 +68,6 @@ app.use(userRoute);
 app.use(chatsRoute);
 app.use(groupRoute);
 app.use((req, res) => {
-    console.log(res.url);
     res.sendFile(path.join(__dirname, `frontend/${req.url}`))
 });
 
@@ -84,8 +82,6 @@ chats.belongsTo(group);
 
 user.belongsToMany(group, { through: usergroup });
 group.belongsToMany(user, { through: usergroup, foreignKey: 'groupId' });
-
-
 
 
 sequelize.sync()

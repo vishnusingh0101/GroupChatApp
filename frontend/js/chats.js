@@ -1,4 +1,3 @@
-
 let lastId = localStorage.getItem('lastId');
 let groupId = localStorage.getItem('groupId');
 const token = localStorage.getItem('token');
@@ -17,12 +16,10 @@ window.onload = async () => {
         const sidebar = document.getElementById('sidebar');
         sidebar.innerHTML = '';
         const group = await axios.get('http://localhost:3000/getGroup', { headers: { "Authorization": token } });
-        console.log(group.data.data);
         for (const grp of group.data.data) {
             showGroup(grp);
         }
     } catch (err) {
-        console.log(err);
     }
 };
 
@@ -49,9 +46,6 @@ function getGroup(grp, div) {
     grpname.appendChild(h3);
 
     //option button
-    console.log(localStorage.getItem('profilemail'));
-    console.log(grp.createBy);
-    console.log(grp.createBy === localStorage.getItem('profilemail'));
     if (grp.createBy === localStorage.getItem('profilemail')) {
         const previousdelbtn = document.getElementById('deletegroup');
         if (previousdelbtn) {
@@ -66,8 +60,7 @@ function getGroup(grp, div) {
                 mail: localStorage.getItem('profilemail')
             }
             const deletebool = await axios.post(`http://localhost:3000/deletegroup?groupname=${grp.groupname}`, obj, { headers: { "Authorization": token } });
-            console.log(deletebool);
-            console.log(grp.groupname);
+            
             if (deletebool) {
                 socket.emit('deletegroup', grp.groupname);
             }
@@ -113,7 +106,6 @@ async function showMembersList() {
                 memberDiv.innerText += '(You)';
                 memberDiv.addEventListener('mousedown', (event) => {
                     event.preventDefault();
-                    console.log('hit you');
                     groupMemberListOptions.style.display = 'none';
                 });
             } else {
@@ -140,7 +132,6 @@ async function showMembersList() {
                         groupMemberListOptions.style.display = 'none';
                     });
                     groupMemberListOptions.appendChild(makeAdminOption);
-                    console.log('gothit');
                 });
             }
             groupMemberList.appendChild(memberDiv);
@@ -200,6 +191,7 @@ async function loadGroupMessage(groupId) {
     if (groupId) {
         const token = localStorage.getItem('token');
         const response = await axios.get(`http://localhost:3000/msg?groupId=${groupId}&lastId=${lastId}`, { headers: { "Authorization": token } });
+        console.log(response);
         const messagebox = document.getElementById('messagebox');
         if (localmessages === null) {
             response.data.message = response.data.message.slice(-10);
@@ -224,8 +216,16 @@ async function loadGroupMessage(groupId) {
     }
 }
 
-async function send(e) {
-    e.preventDefault();
+const textarea = document.getElementById("chat-input");
+
+textarea.addEventListener("keydown", function (event) {
+    if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        send();
+    }
+});
+
+async function send() {
     const token = localStorage.getItem('token');
     const chatInput = document.getElementById('chat-input').value;
     const obj = {
@@ -238,10 +238,50 @@ async function send(e) {
         lastId = lastId + 1;
         socket.emit('sendmessage', response.data.message, localStorage.getItem('groupname'));
         document.getElementById('chat-input').value = '';
+    } else {
+        console.log('error in 250');
     }
 }
 
+const multimediaButton = document.getElementById("multimedia");
+const fileInput = document.getElementById("myFileInput");
+
+multimediaButton.addEventListener("click", function () {
+    fileInput.click();
+});
+
+fileInput.addEventListener('change', async (event) => {
+    const selectedFiles = event.target.files;
+
+    // Loop through all selected files
+    for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const response = await axios.post(`http://localhost:3000/sendFile?groupId=${localStorage.getItem('groupId')}`, formData, {
+                headers: {
+                    'Authorization': token,
+                    // 'Content-Type': 'multipart/form-data',
+                }
+            });
+
+            socket.emit('sendmessage', response.message, localStorage.getItem('groupname'));
+
+            console.log('Upload successful!');
+            console.log('Response:', response.data);
+        } catch (error) {
+            console.error('Upload failed:', error.message);
+        }
+    }
+});
+
+
+
 function setMessageInBox(obj) {
+    console.log(obj);
     const messagebox = document.getElementById('messagebox');
     if (document.getElementsByClassName('msg').length > 9) {
         messagebox.removeChild(document.getElementsByClassName('msg')[0]);
@@ -254,7 +294,6 @@ function setMessageInBox(obj) {
     const message = document.createElement('div');
 
     const messagecontent = document.createElement('div');
-    messagecontent.classList = 'messagecontent';
 
     if (obj.userId == id) {
         name.innerText = 'You:';
@@ -263,12 +302,23 @@ function setMessageInBox(obj) {
         name.innerText = obj.name;
         message.classList = 'messageleft msg';
     }
-    messagecontent.innerText = obj.message;
+    if (obj.link == true) {
+        messagecontent.classList = 'filecontent';
+        const downloadLink = document.createElement("a");
+        downloadLink.style.display = 'none';
+        downloadLink.href = obj.URL;
+        downloadLink.download = obj.message;
+        messagecontent.addEventListener('mousedown', ()=>{
+            downloadLink.click();
+        });
+        messagecontent.innerHTML = '<img src="../images/icons/file.png"><i class="fi fi-rr-down-to-line"></i>'+ obj.message;
+    } else {
+        messagecontent.classList = 'messagecontent';
+        messagecontent.innerText = obj.message;
+    }
 
     message.appendChild(name);
     message.appendChild(messagecontent);
-
-    message.dataset.id = obj.id; // Set the ID as a custom attribute
 
     messagebox.appendChild(message);
     messagebox.scrollTop = messagebox.scrollHeight;
@@ -412,10 +462,10 @@ socket.on('groupmsg', data => {
     setMessageInBox(data);
 });
 
-socket.on('removeusersuccess', name=>{
-    console.log(name,' removed from the group');
+socket.on('removeusersuccess', name => {
+    console.log(name, ' removed from the group');
 });
 
-socket.on('newAminsuccess', name=>{
-    console.log(name,' become admin');
+socket.on('newAminsuccess', name => {
+    console.log(name, ' become admin');
 });

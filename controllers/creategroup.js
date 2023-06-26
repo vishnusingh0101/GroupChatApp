@@ -17,7 +17,6 @@ const search = async (req, res) => {
             }
         }
     } catch (err) {
-        console.log(err);
         res.status(500).json({ status: false, message: 'Server Not Responding Try Later' });
     }
 }
@@ -47,7 +46,6 @@ const creategroup = async (req, res, next) => {
 };
 
 const getgroup = async (req, res, next) => {
-    console.log(req.user);
     const user = await User.findByPk(req.user.id, {
         include: Group
     });
@@ -66,7 +64,6 @@ const deletegroup = async (req, res, next) => {
             });
             res.status(200).json({ success: true });
         } catch (error) {
-            console.log(error);
             res.status(201).json({ success: false });
         }
     }
@@ -78,10 +75,8 @@ const members = async (req, res, next) => {
 
     if (group) {
         const members = await group.getUsers();
-        console.log(members);
         res.status(200).json({ data: members });
     } else {
-        console.log('Group not found');
         res.status(404).json({ error: 'Group not found' });
     }
 };
@@ -95,7 +90,6 @@ const remove = async (req, res, next) => {
             isadmin: true
         }
     });
-    console.log(isadmin);
     if (isadmin) {
         const val = await Usergroup.destroy({
             where: {
@@ -103,7 +97,6 @@ const remove = async (req, res, next) => {
                 userId: req.query.memberId,
             }
         });
-        console.log(val);
         res.status(200).json({ success: true, val, mail: req.user.mail });
     } else {
         res.status(201).json({ success: false, val: 'you dont have permision' });

@@ -11,6 +11,13 @@ const chats = sequelize.define('chats',{
     name: Sequelize.STRING,
     message: {
         type: Sequelize.STRING
+    },
+    URL:{
+        type: Sequelize.STRING,
+    },
+    link: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
     }
 });
 

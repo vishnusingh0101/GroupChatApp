@@ -8,6 +8,7 @@
     <title>Group Chat</title>
     <link rel="stylesheet" href="../css/groupchat.css">
     <link rel="stylesheet" href="../css/creategroup.css">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
 </head>
 
 <body>
@@ -56,8 +57,11 @@
                         </div> -->
                     </div>
                     <div class="chat-footer" id="chat-footer">
+                        <button id="multimedia" class="multimedia">
+                            <input type="file" id="myFileInput" style="display: none;">
+                            <img src="../images/icons/attatch.png" alt="Attach">
+                          </button>
                         <textarea placeholder="Type a message..." id="chat-input"></textarea>
-                        <button onclick="send(event)">Send</button>
                     </div>
                 </div>
             </div>
