@@ -68,6 +68,7 @@ function getGroup(grp, div) {
         optionDiv.appendChild(deletegroupbtn);
     }
     loadGroupMessage(grp.id);
+    console.log(grp);
     localStorage.setItem('groupname', grp.groupname);
     socket.emit('ingroup', grp.groupname);
 }
@@ -267,11 +268,9 @@ fileInput.addEventListener('change', async (event) => {
                     // 'Content-Type': 'multipart/form-data',
                 }
             });
-
-            socket.emit('sendmessage', response.message, localStorage.getItem('groupname'));
-
+            
+            socket.emit('sendmessage', response.data.message, localStorage.getItem('groupname'));
             console.log('Upload successful!');
-            console.log('Response:', response.data);
         } catch (error) {
             console.error('Upload failed:', error.message);
         }
@@ -281,7 +280,7 @@ fileInput.addEventListener('change', async (event) => {
 
 
 function setMessageInBox(obj) {
-    console.log(obj);
+    console.log('obj ---------'+obj);
     const messagebox = document.getElementById('messagebox');
     if (document.getElementsByClassName('msg').length > 9) {
         messagebox.removeChild(document.getElementsByClassName('msg')[0]);
@@ -296,6 +295,8 @@ function setMessageInBox(obj) {
     const messagecontent = document.createElement('div');
 
     if (obj.userId == id) {
+        console.log(obj.userId);
+        console.log(id);
         name.innerText = 'You:';
         message.classList = 'messageright msg';
     } else {

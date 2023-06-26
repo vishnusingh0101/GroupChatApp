@@ -28,6 +28,7 @@ io.on('connection',socket=>{
         socket.join(group);
     });
     socket.on('sendmessage',(data, group)=>{
+        console.log(data);
             io.to(group).emit('groupmsg', data);
     });
 
