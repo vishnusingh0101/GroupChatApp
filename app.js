@@ -69,7 +69,11 @@ app.use(userRoute);
 app.use(chatsRoute);
 app.use(groupRoute);
 app.use((req, res) => {
-    res.sendFile(path.join(__dirname, `frontend/${req.url}`))
+    if(req.url == '/'){
+        res.sendFile(path.join(__dirname, `frontend/signin.html`));
+    }else{
+        res.sendFile(path.join(__dirname, `frontend/${req.url}`))
+    };
 });
 
 
