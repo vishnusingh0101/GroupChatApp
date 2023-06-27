@@ -59,7 +59,7 @@ io.on('connection',socket=>{
 
 app.use(cors({
     // origin: 'http://127.0.0.1:5500',
-    // origin:'http://localhost:3000',
+    // origin:'http://13.210.87.174:3000',
     // credentials:true,            //access-control-allow-credentials:true
     // optionSuccessStatus:200
 }));

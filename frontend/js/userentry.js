@@ -13,11 +13,11 @@ async function createUser(e) {
                 phone: document.getElementById('phone').value,
                 password: document.getElementById('password').value,
             };
-            const response = await axios.post('http://localhost:3000/signup', obj);
+            const response = await axios.post('http://13.210.87.174:3000/signup', obj);
     
             if (response.status === 201 && response.data.message === 'Created new user') {
                 localStorage.setItem('token', response.data.token);
-                window.location.href = '../html/signin.html';
+                window.location.href = './signin.html';
             } else {
                 throw new Error(response.data.message);
             }
@@ -50,13 +50,13 @@ async function login(e) {
                 mail,
                 password: document.getElementById('password').value,
             };
-            const response = await axios.post('http://localhost:3000/signin', obj);
+            const response = await axios.post('http://13.210.87.174:3000/signin', obj);
 
             if (response.status === 200 && response.data.message === 'Successfully Logged In') {
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('profilemail', mail);
                 localStorage.setItem('userId', response.data.userId);
-                window.location.href = '../html/groupchat.html';
+                window.location.href = './groupchat.html';
             } else {
                 throw new Error(response.data.message);
             }
