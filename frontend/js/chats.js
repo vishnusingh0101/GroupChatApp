@@ -6,7 +6,7 @@ const options = document.getElementById('options');
 const groupMemberList = document.getElementById('groupmemberlist');
 const groupMemberListOptions = document.getElementById('groupmemberlistoptions');
 
-const socket = io('http://13.210.87.174:3000');
+const socket = io('http://localhost:3000');
 
 
 window.onload = async () => {
@@ -15,7 +15,7 @@ window.onload = async () => {
     try {
         const sidebar = document.getElementById('sidebar');
         sidebar.innerHTML = '';
-        const group = await axios.get('http://13.210.87.174:3000/getGroup', { headers: { "Authorization": token } });
+        const group = await axios.get('http://localhost:3000/getGroup', { headers: { "Authorization": token } });
         for (const grp of group.data.data) {
             showGroup(grp);
         }
@@ -59,7 +59,7 @@ function getGroup(grp, div) {
             const obj = {
                 mail: localStorage.getItem('profilemail')
             }
-            const deletebool = await axios.post(`http://13.210.87.174:3000/deletegroup?groupname=${grp.groupname}`, obj, { headers: { "Authorization": token } });
+            const deletebool = await axios.post(`http://localhost:3000/deletegroup?groupname=${grp.groupname}`, obj, { headers: { "Authorization": token } });
             
             if (deletebool) {
                 socket.emit('deletegroup', grp.groupname);
@@ -93,7 +93,7 @@ async function showMembersList() {
     const profileMail = localStorage.getItem('profilemail');
 
     try {
-        const response = await axios.get(`http://13.210.87.174:3000/members?groupId=${groupId}`);
+        const response = await axios.get(`http://localhost:3000/members?groupId=${groupId}`);
         const members = response.data.data;
 
         groupMemberList.style.display = 'block';
@@ -167,7 +167,7 @@ function showGroup(grp, socketbool) {
 function removeMember(memberId) {
     console.log('removeMember');
     const token = localStorage.getItem('token');
-    const deleted = axios.get(`http://13.210.87.174:3000/remove?groupId=${groupId}&memberId=${memberId}`, { headers: { "Authorization": token } });
+    const deleted = axios.get(`http://localhost:3000/remove?groupId=${groupId}&memberId=${memberId}`, { headers: { "Authorization": token } });
     console.log(deleted);
     groupmemberlistoptions.style.display = 'none';
     groupmemberlist.style.display = 'none';
@@ -178,7 +178,7 @@ function removeMember(memberId) {
 function makeAdmin(memberId) {
     console.log('makeAdmin');
     const token = localStorage.getItem('token');
-    const isadmin = axios.get(`http://13.210.87.174:3000/makeadmin?groupId=${groupId}&memberId=${memberId}`, { headers: { "Authorization": token } });
+    const isadmin = axios.get(`http://localhost:3000/makeadmin?groupId=${groupId}&memberId=${memberId}`, { headers: { "Authorization": token } });
     console.log(isadmin);
     groupmemberlistoptions.style.display = 'none';
     groupmemberlist.style.display = 'none';
@@ -191,7 +191,7 @@ async function loadGroupMessage(groupId) {
     let lastId = 1;
     if (groupId) {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`http://13.210.87.174:3000/msg?groupId=${groupId}&lastId=${lastId}`, { headers: { "Authorization": token } });
+        const response = await axios.get(`http://localhost:3000/msg?groupId=${groupId}&lastId=${lastId}`, { headers: { "Authorization": token } });
         console.log(response);
         const messagebox = document.getElementById('messagebox');
         if (localmessages === null) {
@@ -233,7 +233,7 @@ async function send() {
         chatInput,
         groupId: localStorage.getItem('groupId')
     };
-    const response = await axios.post('http://13.210.87.174:3000/send', obj, { headers: { "Authorization": token } });
+    const response = await axios.post('http://localhost:3000/send', obj, { headers: { "Authorization": token } });
     console.log(localStorage.getItem('groupname'));
     if (response.data.status === true) {
         lastId = lastId + 1;
@@ -262,7 +262,7 @@ fileInput.addEventListener('change', async (event) => {
             const formData = new FormData();
             formData.append("file", file);
 
-            const response = await axios.post(`http://13.210.87.174:3000/sendFile?groupId=${localStorage.getItem('groupId')}`, formData, {
+            const response = await axios.post(`http://localhost:3000/sendFile?groupId=${localStorage.getItem('groupId')}`, formData, {
                 headers: {
                     'Authorization': token,
                     // 'Content-Type': 'multipart/form-data',
@@ -336,7 +336,7 @@ function isMessageExists(id) {
 
 function logout() {
     localStorage.clear();
-    window.location.href = '../html/signin.html';
+    window.location.href = './signin.html';
 }
 
 
@@ -359,7 +359,7 @@ async function searchmember(e) {
     const token = localStorage.getItem('token');
     console.log(token);
     const obj = { mail: document.getElementById('searchmail').value };
-    const member = await axios.post('http://13.210.87.174:3000/search', obj, { headers: { "Authorization": token } });
+    const member = await axios.post('http://localhost:3000/search', obj, { headers: { "Authorization": token } });
     showOnScreen(member.data.user);
 }
 
@@ -420,19 +420,19 @@ async function createGroup(e) {
         groupName: document.getElementById('groupname').value,
     }
     console.log(obj);
-    const group = await axios.post('http://13.210.87.174:3000/creategroup', obj, { headers: { 'Authorization': token } });
+    const group = await axios.post('http://localhost:3000/creategroup', obj, { headers: { 'Authorization': token } });
     socket.emit('showNewGroup', group);
     const list = document.getElementById('memberlist');
     list.innerHTML = '';
-    moveback();
-
-
-}
-
-function moveback() {
+    // moveback();
     const createGroupDiv = document.getElementById('createGroupDiv')
     createGroupDiv.style.display = 'none';
 }
+
+document.getElementById('cancelCreateGroup').addEventListener('click', ()=>{
+    const createGroupDiv = document.getElementById('createGroupDiv')
+    createGroupDiv.style.display = 'none';
+})
 
 function removeGroupfromScreen(groupname) {
     const sidebar = document.getElementById('sidebar');
