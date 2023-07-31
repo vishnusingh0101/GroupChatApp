@@ -1,3 +1,5 @@
+const host = '3.26.17.155:3000';
+
 let lastId = localStorage.getItem('lastId');
 let groupId = localStorage.getItem('groupId');
 const token = localStorage.getItem('token');
@@ -5,8 +7,10 @@ const optionDiv = document.getElementById('optiondiv');
 const options = document.getElementById('options');
 const groupMemberList = document.getElementById('groupmemberlist');
 const groupMemberListOptions = document.getElementById('groupmemberlistoptions');
+const createGroupDiv = document.getElementById('createGroupDiv'); 
+const textarea = document.getElementById("chat-input");
 
-const socket = io('http://localhost:3000');
+const socket = io(`http://${host}`);
 
 
 window.onload = async () => {
@@ -15,11 +19,12 @@ window.onload = async () => {
     try {
         const sidebar = document.getElementById('sidebar');
         sidebar.innerHTML = '';
-        const group = await axios.get('http://localhost:3000/getGroup', { headers: { "Authorization": token } });
+        const group = await axios.get(`http://${host}/getGroup`, { headers: { "Authorization": token } });
         for (const grp of group.data.data) {
             showGroup(grp);
         }
     } catch (err) {
+        console.log(err);
     }
 };
 
@@ -31,12 +36,12 @@ function getGroup(grp, div) {
     for (groupEl of groupElements) {
         groupEl.classList.remove('active');
     }
+
     div.classList.add('active');
     localStorage.setItem('groupId', grp.id);
     document.getElementById('messagebox').innerHTML = '';
     let lastId = null;
     localStorage.setItem('lastId', lastId);
-    localStorage.setItem('localmessages', '');
 
     //head grpname
     const grpname = document.getElementById('grpname');
@@ -59,10 +64,30 @@ function getGroup(grp, div) {
             const obj = {
                 mail: localStorage.getItem('profilemail')
             }
-            const deletebool = await axios.post(`http://localhost:3000/deletegroup?groupname=${grp.groupname}`, obj, { headers: { "Authorization": token } });
+            const deletebool = await axios.post(`http://${host}/deletegroup?groupname=${grp.groupname}`, obj, { headers: { "Authorization": token } });
             
             if (deletebool) {
                 socket.emit('deletegroup', grp.groupname);
+            }
+        })
+        optionDiv.appendChild(deletegroupbtn);
+    }else{
+        const previousdelbtn = document.getElementById('deletegroup');
+        if (previousdelbtn) {
+            optionDiv.removeChild(previousdelbtn);
+        }
+        const deletegroupbtn = document.createElement('button');
+        deletegroupbtn.innerText = 'Leave Group';
+        deletegroupbtn.id = 'deletegroup';
+        deletegroupbtn.addEventListener('mousedown', async (event) => {
+            event.preventDefault();
+            const obj = {
+                mail: localStorage.getItem('profilemail')
+            }
+            console.log(groupId);
+            const deletebool = await axios.post(`http://${host}/leavegroup?groupId=${groupId}`, obj, { headers: { "Authorization": token } });
+            if(deletebool.data.success == true) {
+                removeGroupfromScreen(grp.groupname);
             }
         })
         optionDiv.appendChild(deletegroupbtn);
@@ -83,17 +108,15 @@ document.addEventListener('mousedown', (event) => {
         optionDiv.style.display = 'none';
         groupMemberList.style.display = 'none';
         groupMemberListOptions.style.display = 'none';
-
     }
 });
 
 async function showMembersList() {
     groupMemberList.innerHTML = '';
-    const groupId = localStorage.getItem('groupId');
     const profileMail = localStorage.getItem('profilemail');
 
     try {
-        const response = await axios.get(`http://localhost:3000/members?groupId=${groupId}`);
+        const response = await axios.get(`http://${host}/members?groupId=${groupId}`);
         const members = response.data.data;
 
         groupMemberList.style.display = 'block';
@@ -166,58 +189,89 @@ function showGroup(grp, socketbool) {
 
 function removeMember(memberId) {
     console.log('removeMember');
-    const token = localStorage.getItem('token');
-    const deleted = axios.get(`http://localhost:3000/remove?groupId=${groupId}&memberId=${memberId}`, { headers: { "Authorization": token } });
+    const deleted = axios.get(`http://${host}/remove?groupId=${groupId}&memberId=${memberId}`, { headers: { "Authorization": token } });
     console.log(deleted);
     groupmemberlistoptions.style.display = 'none';
     groupmemberlist.style.display = 'none';
     groupmemberlistoptions.innerHTML = '';
-    // Implement the logic to remove the member with the provided memberId
 }
 
 function makeAdmin(memberId) {
     console.log('makeAdmin');
-    const token = localStorage.getItem('token');
-    const isadmin = axios.get(`http://localhost:3000/makeadmin?groupId=${groupId}&memberId=${memberId}`, { headers: { "Authorization": token } });
+    const isadmin = axios.get(`http://${host}/makeadmin?groupId=${groupId}&memberId=${memberId}`, { headers: { "Authorization": token } });
     console.log(isadmin);
     groupmemberlistoptions.style.display = 'none';
     groupmemberlist.style.display = 'none';
     groupmemberlistoptions.innerHTML = '';
-    // Implement the logic to make the member with the provided memberId an admin
 }
 
 async function loadGroupMessage(groupId) {
-    const localmessages = localStorage.getItem('localmessages' + groupId);
+    const localMessages = JSON.parse(localStorage.getItem('localmessages' + groupId));
     let lastId = 1;
+
     if (groupId) {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(`http://localhost:3000/msg?groupId=${groupId}&lastId=${lastId}`, { headers: { "Authorization": token } });
-        console.log(response);
-        const messagebox = document.getElementById('messagebox');
-        if (localmessages === null) {
-            response.data.message = response.data.message.slice(-10);
+        if (localMessages) {
+            for (const message of localMessages) {
+                if (!isMessageExists(message.id)) {
+                    setMessageInBox(message);
+                    lastId = message.id;
+                }
+            }
+            lastId = JSON.parse(localStorage.getItem('lastId'));
         }
+
+        const response = await axios.get(`http://${host}/msg?groupId=${groupId}&lastId=${lastId}`, {
+            headers: { "Authorization": token }
+        });
+
+        console.log(response);
+
+        const messagebox = document.getElementById('messagebox');
+
         if (response.data.status === true) {
-            let data;
+            let data = [];
+
             for (const message of response.data.message) {
                 if (!isMessageExists(message.id)) {
                     setMessageInBox(message);
                     lastId = message.id;
-                    data += message;
+                    data.push(message);
                 }
             }
+
             localStorage.setItem('lastId', lastId);
 
-            const previousLocalMessages = localStorage.getItem(localmessages);
-            const arrayString = previousLocalMessages + JSON.stringify(data);
-            localStorage.setItem('localmessages' + groupId, arrayString);
+            if(data.length > 10){
+                let extra = 10-data.length;
+                while(extra > 0){
+                    data.shift();
+                }
+            }
+            if (localMessages) {
+                const previousLocalMessages = JSON.parse(localMessages);
+                data = [...previousLocalMessages, ...data];
+            }
+            
+            localStorage.removeItem('localmessages' + groupId);
+            localStorage.setItem('localmessages' + groupId, JSON.stringify(data));
 
             messagebox.scrollTop = messagebox.scrollHeight;
         }
     }
 }
 
-const textarea = document.getElementById("chat-input");
+function isMessageExists(id) {
+    const messages = document.getElementsByClassName('msg');
+    for (let i = 0; i < messages.length; i++) {
+        if (messages[i].dataset.id === id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+
 
 textarea.addEventListener("keydown", function (event) {
     if (event.key === "Enter" && !event.shiftKey) {
@@ -227,13 +281,12 @@ textarea.addEventListener("keydown", function (event) {
 });
 
 async function send() {
-    const token = localStorage.getItem('token');
     const chatInput = document.getElementById('chat-input').value;
     const obj = {
         chatInput,
         groupId: localStorage.getItem('groupId')
     };
-    const response = await axios.post('http://localhost:3000/send', obj, { headers: { "Authorization": token } });
+    const response = await axios.post(`http://${host}/send`, obj, { headers: { "Authorization": token } });
     console.log(localStorage.getItem('groupname'));
     if (response.data.status === true) {
         lastId = lastId + 1;
@@ -262,7 +315,7 @@ fileInput.addEventListener('change', async (event) => {
             const formData = new FormData();
             formData.append("file", file);
 
-            const response = await axios.post(`http://localhost:3000/sendFile?groupId=${localStorage.getItem('groupId')}`, formData, {
+            const response = await axios.post(`http://${host}/sendFile?groupId=${groupId}`, formData, {
                 headers: {
                     'Authorization': token,
                     // 'Content-Type': 'multipart/form-data',
@@ -324,16 +377,6 @@ function setMessageInBox(obj) {
     messagebox.scrollTop = messagebox.scrollHeight;
 }
 
-function isMessageExists(id) {
-    const messages = document.getElementsByClassName('msg');
-    for (let i = 0; i < messages.length; i++) {
-        if (messages[i].dataset.id === id) {
-            return true;
-        }
-    }
-    return false;
-}
-
 function logout() {
     localStorage.clear();
     window.location.href = './signin.html';
@@ -348,18 +391,15 @@ function logout() {
 let userMails = new Set();
 
 function createGroupForm() {
-    const createGroupDiv = document.getElementById('createGroupDiv')
     createGroupDiv.style.display = 'flex';
 }
-
 
 async function searchmember(e) {
     e.preventDefault();
     console.log('worked');
-    const token = localStorage.getItem('token');
     console.log(token);
     const obj = { mail: document.getElementById('searchmail').value };
-    const member = await axios.post('http://localhost:3000/search', obj, { headers: { "Authorization": token } });
+    const member = await axios.post(`http://${host}/search`, obj, { headers: { "Authorization": token } });
     showOnScreen(member.data.user);
 }
 
@@ -413,26 +453,24 @@ function removeuser(event, user) {
 
 async function createGroup(e) {
     e.preventDefault();
-    const token = localStorage.getItem('token');
     const userMailsArray = Array.from(userMails);
     const obj = {
         userMailsArray,
         groupName: document.getElementById('groupname').value,
     }
     console.log(obj);
-    const group = await axios.post('http://localhost:3000/creategroup', obj, { headers: { 'Authorization': token } });
+    const group = await axios.post(`http://${host}/creategroup`, obj, { headers: { 'Authorization': token } });
     socket.emit('showNewGroup', group);
     const list = document.getElementById('memberlist');
     list.innerHTML = '';
-    // moveback();
-    const createGroupDiv = document.getElementById('createGroupDiv')
     createGroupDiv.style.display = 'none';
 }
 
-document.getElementById('cancelCreateGroup').addEventListener('click', ()=>{
-    const createGroupDiv = document.getElementById('createGroupDiv')
+document.getElementById('cancelCreateGroup').addEventListener('click', (event) => {
+    event.preventDefault();
+    console.log('Cancel button clicked!');
     createGroupDiv.style.display = 'none';
-})
+  });
 
 function removeGroupfromScreen(groupname) {
     const sidebar = document.getElementById('sidebar');
@@ -446,9 +484,9 @@ function removeGroupfromScreen(groupname) {
     chatbox.style.display = 'none';
 }
 
-
 //All sockets
-socket.on('displaysuccess', response => {
+socket.on('displaygroup', response => {
+    console.log(response, 'socket response');
     showGroup(response.data.group, true);
 });
 
@@ -457,7 +495,6 @@ socket.on('deletesuccess', response => {
 });
 
 socket.on('groupmsg', data => {
-    console.log(data);
     setMessageInBox(data);
 });
 

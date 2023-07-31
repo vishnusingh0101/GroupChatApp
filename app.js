@@ -23,7 +23,6 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 io.on('connection', socket => {
-    console.log('connected to server');
     socket.on('ingroup', (group) => {
         socket.join(group);
     });
@@ -45,7 +44,7 @@ io.on('connection', socket => {
     });
 
     socket.on('showNewGroup', data => {
-        io.emit('displaysuccess', data)
+        io.emit('displaygroup', data)
 
     });
 

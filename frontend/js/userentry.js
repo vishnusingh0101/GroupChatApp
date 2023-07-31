@@ -1,3 +1,5 @@
+const host = '3.26.17.155:3000';
+
 async function createUser(e) {
     e.preventDefault();
     const output = document.getElementById('message');
@@ -13,7 +15,7 @@ async function createUser(e) {
                 phone: document.getElementById('phone').value,
                 password: document.getElementById('password').value,
             };
-            const response = await axios.post('http://localhost:3000/signup', obj);
+            const response = await axios.post(`http://${host}/signup`, obj);
     
             if (response.status === 201 && response.data.message === 'Created new user') {
                 localStorage.setItem('token', response.data.token);
@@ -24,6 +26,7 @@ async function createUser(e) {
     
         }
     }catch(error) {
+        console.log(error)
         if(error.response && error.response.status == 409) {
             h3.innerText = error.response.data.message;
         }else {
@@ -50,7 +53,7 @@ async function login(e) {
                 mail,
                 password: document.getElementById('password').value,
             };
-            const response = await axios.post('http://localhost:3000/signin', obj);
+            const response = await axios.post(`http://${host}/signin`, obj);
 
             if (response.status === 200 && response.data.message === 'Successfully Logged In') {
                 localStorage.setItem('token', response.data.token);

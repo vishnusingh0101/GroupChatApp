@@ -31,7 +31,6 @@ const creategroup = async (req, res, next) => {
             const user = await User.findOne({ where: { mail: mail } });
             if (user) {
                 await user.addGroup(group, { through: { isadmin: false } });
-
                 // Checking if the current user is creating the group
                 if (user.mail === req.user.mail) {
                     await user.addGroup(group, { through: { isadmin: true } });
@@ -64,6 +63,23 @@ const deletegroup = async (req, res, next) => {
             });
             res.status(200).json({ success: true });
         } catch (error) {
+            res.status(201).json({ success: false });
+        }
+    }
+}
+
+const leavegroup = async (req, res, next) => {
+    const groupId = req.query.groupId;
+    const userId = req.user.id;
+    if (req.body.mail == req.user.mail) {
+        try {
+            const user = await User.findByPk(userId);
+            const group = await Group.findByPk(groupId);
+            if(!user || !group) throw "Not Possible";
+            await user.removeGroup(group);
+            res.status(200).json({ success: true });
+        } catch (error) {
+            console.log(error);
             res.status(201).json({ success: false });
         }
     }
@@ -130,8 +146,9 @@ module.exports = {
     search,
     creategroup,
     getgroup,
+    deletegroup,
+    leavegroup,
     members,
     remove,
     makeadmin,
-    deletegroup
 }

@@ -16,11 +16,17 @@ const signup = async (req, res, next) => {
             return res.status(409).json({success: false, message: "Phone Number already exist!"});
         }
         bcrypt.hash(password, 10, async (err, hash) => {
-            await User.create({name, mail, phone, password:hash});
+            await User.create({
+                name:name,
+                mail:mail, 
+                phone:phone, 
+                password:hash
+            });
             return res.status(201).json({message: "Created new user"});
         })
     }
     catch(err) {
+        console.log(err);
         res.status(500).json({error: err});
     }
 };
@@ -28,6 +34,7 @@ const signup = async (req, res, next) => {
 const signin = async (req, res, next) => {
     const { mail, password } = req.body;
     const user = await User.findOne({where: {mail}});
+    console.log(mail, user);
     if(user) {
         bcrypt.compare(password, user.password, (err, result) => {
             if(err) {
@@ -46,7 +53,7 @@ const signin = async (req, res, next) => {
 };
 
 function generateToken(id, name) {
-    return jwt.sign({id, name}, process.env.JWT_TOKEN);
+    return jwt.sign({id, name}, process.env.JWT_TOKEN, { expiresIn: '24h'}); //will expire in 24 hours
 }
 
 module.exports = {

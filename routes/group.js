@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const creategroup = require('../controllers/creategroup');
+const creategroup = require('../controllers/group');
 const authenticate = require('../middleware/auth');
 
 router.post('/search', authenticate, creategroup.search);
@@ -12,5 +12,6 @@ router.get('/members', creategroup.members);
 router.get('/remove',authenticate, creategroup.remove);
 router.get('/makeadmin',authenticate, creategroup.makeadmin);
 router.post('/deletegroup',authenticate, creategroup.deletegroup);
+router.post('/leavegroup',authenticate, creategroup.leavegroup);
 
 module.exports = router;

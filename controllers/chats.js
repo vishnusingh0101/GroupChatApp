@@ -11,7 +11,7 @@ const fetchmessages = async (req, res, next) => {
         if (lastId === null || lastId === 'null') {
             msg = await Chats.findAll({
                 where: { groupId: groupId },
-                order: [['id', 'DESC']],
+                order: [['id', 'ASC']],
                 limit: 10
             });
         } else {
